@@ -1,0 +1,37 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 7
+    buildToolsVersion "25.0.0"
+
+    defaultConfig {
+        applicationId "frontier.app"
+        minSdkVersion 7
+        targetSdkVersion 7
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles 'proguard.cfg'
+        }
+    }
+}
+
+task clearJar(type: Delete) {
+
+    delete getProperty('build.jar.outputDir') + '/' + getProperty('build.jar.name') + '.jar'
+
+}
+
+task makeJar(type: Copy) {
+
+    from(getProperty('build.jar.source.classesJar')) {
+
+        rename('classes.jar', getProperty('build.jar.name') + '-' + getProperty('build.jar.version') + '.jar')
+
+    }
+    into('build/libs')
+
+}
+makeJar.dependsOn(clearJar, ':app:jarReleaseClasses')
